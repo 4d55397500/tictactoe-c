@@ -1,8 +1,11 @@
 #include <iostream>
 #include <MacTypes.h>
+#include <search.h>
 
 #define SIZE 3
 #define EMPTY 'e'
+#define BIGNUM 100
+#define MAXNUMSTATES 10000
 
 enum Player {Player1 = 'x', Player2 = 'o'};
 
@@ -22,6 +25,7 @@ void printstate(struct state* s) {
         }
     }
 }
+
 
 // a string representation of the state, for
 // efficient ordering and lookup
@@ -95,7 +99,12 @@ struct nextstates* nextstatesalloc() {
 }
 
 struct state* nextalloc(struct state *s, Player player, int i, int j) {
-    struct state *next = s;
+    struct state *next = statealloc();
+    for (int q = 0; q < SIZE; q++) {
+        for (int v = 0; v < SIZE; v++) {
+            next ->arr[q][v] = s->arr[q][v];
+        }
+    }
     next->arr[i][j] = player;
     return next;
 }
@@ -115,16 +124,53 @@ struct nextstates* allnext(struct state *s, Player player) {
 }
 
 struct scores {
-    char *reprs[SIZE * SIZE];
+    char *reprs[MAXNUMSTATES];
+    int scores[MAXNUMSTATES];
     int n; // number of states scored so far
 };
+
+// tbd
+void sortscores(struct scores *sc) {}
+
+int lookupscore(struct scores *sc, struct state *s) {
+    char *r = staterepr(s);
+    for (int i = 0; i < sc->n; i++) {
+        if (strcmp(r, sc->reprs[i]) == 0) {
+            return sc->scores[i];
+        }
+    }
+    return BIGNUM;
+}
+
+void printscores(struct scores *sc) {
+    for (int i = 0; i < sc->n; i++) {
+        printf("state: %s score: %d\n", sc->reprs[i], sc->scores[i]);
+    }
+}
+
+struct scores *add(struct scores *sc, struct state *s, int score) {
+    sc->reprs[sc->n] = staterepr(s);
+    sc->scores[sc->n] = score;
+    sc->n++;
+    return sc;
+}
 
 struct scores* scoresalloc() {
     return (struct scores *) malloc(sizeof(struct scores));
 }
 
+static scores *calcscores;
+
 int minimax(struct state *s, Player player) {
-    int best = (player == Player1) ? -100 : 100;
+    if (calcscores == nullptr) {
+        calcscores = scoresalloc();
+        calcscores->n = 0;
+    }
+    int cached = lookupscore(calcscores, s);
+    if (cached != BIGNUM) {
+        return cached;
+    }
+    int best = (player == Player1) ? -BIGNUM: BIGNUM;
     if (!gameover(s)) {
         struct nextstates *ns = allnext(s, player);
         int nextscore;
@@ -135,15 +181,61 @@ int minimax(struct state *s, Player player) {
         }
     } else {
         best = overscore(s);
+        add(calcscores, s, best);
     }
     return best;
 }
 
-int main() {
-    struct state* s = statealloc();
+struct state* randomnext(struct state *s, Player player) {
+    struct nextstates *ns = allnext(s, player);
+    return &ns->states[rand() % ns->n];
+}
+
+// learned state transition
+struct state *transition(struct state *s, Player player) {
+    struct nextstates *ns = allnext(s, player);
+    struct state* next;
+    int nextscore = (player == Player1) ? -BIGNUM: BIGNUM;
+    int candidatescore;
+    int candidate = 0;
+    for (int i = 0; i < ns->n; i++) {
+        candidatescore = lookupscore(calcscores, &ns->states[i]);
+        if ((player == Player1 && candidatescore > nextscore) ||
+        (player == Player2 && candidatescore < nextscore)) {
+            nextscore = candidatescore;
+            candidate = i;
+        }
+    }
+    return &ns->states[candidate];
+}
+
+void playgame() {
+    srand(time(0));
     printf("training minimax ...\n");
-    int best = minimax(s, Player1);
-    printf("%d\n", best);
+    Player player = Player1;
+    int best = minimax(statealloc(), player);
+    printf("best: %d\n", best);
+    struct state *s = statealloc();
+    printf("playing game, with player %c using minimax, player %c playing randomly.\n",
+            Player1, Player2);
+    while (!gameover(s)) {
+        if (player == Player1) {
+            s = transition(s, player);
+        } else {
+            s = randomnext(s, player);
+        }
+        printf("player %c played:\n", player);
+        printstate(s);
+        player = other(player);
+    }
+    if (iswin(s, Player1)) printf("player %c wins.\n", Player1);
+    else if (iswin(s, Player2)) printf("player %c wins.\n", Player2);
+    else printf("stalemate.\n");
+
+}
+
+int main() {
+    playgame();
     return 0;
 }
 
