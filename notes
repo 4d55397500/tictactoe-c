@@ -1,0 +1,2 @@
+both players playing a minimax strategy (from the same tree) should always result in a stalemate: the root should always have a score of 0.
+

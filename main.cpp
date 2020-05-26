@@ -1,6 +1,4 @@
 #include <iostream>
-#include <MacTypes.h>
-#include <search.h>
 
 #define SIZE 3
 #define EMPTY 'e'
@@ -26,6 +24,18 @@ void printstate(struct state* s) {
     }
 }
 
+void printkey(char *repr) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            printf("%c", repr[i * SIZE + j]);
+            if ((j+1) % SIZE == 0) {
+                printf("\n");
+            } else {
+                printf(" ");
+            }
+        }
+    }
+}
 
 // a string representation of the state, for
 // efficient ordering and lookup
@@ -144,7 +154,8 @@ int lookupscore(struct scores *sc, struct state *s) {
 
 void printscores(struct scores *sc) {
     for (int i = 0; i < sc->n; i++) {
-        printf("state: %s score: %d\n", sc->reprs[i], sc->scores[i]);
+        printf("score: %d state:\n", sc->scores[i]);
+        printkey(sc->reprs[i]);
     }
 }
 
@@ -181,8 +192,8 @@ int minimax(struct state *s, Player player) {
         }
     } else {
         best = overscore(s);
-        add(calcscores, s, best);
     }
+    add(calcscores, s, best);
     return best;
 }
 
@@ -194,7 +205,6 @@ struct state* randomnext(struct state *s, Player player) {
 // learned state transition
 struct state *transition(struct state *s, Player player) {
     struct nextstates *ns = allnext(s, player);
-    struct state* next;
     int nextscore = (player == Player1) ? -BIGNUM: BIGNUM;
     int candidatescore;
     int candidate = 0;
@@ -215,6 +225,7 @@ void playgame() {
     Player player = Player1;
     int best = minimax(statealloc(), player);
     printf("best: %d\n", best);
+    //printscores(calcscores);
     struct state *s = statealloc();
     printf("playing game, with player %c using minimax, player %c playing randomly.\n",
             Player1, Player2);
@@ -223,6 +234,8 @@ void playgame() {
             s = transition(s, player);
         } else {
             s = randomnext(s, player);
+            // playing both players from minimax strategy will result in stalemate
+            //s = transition(s, player);
         }
         printf("player %c played:\n", player);
         printstate(s);
