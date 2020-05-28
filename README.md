@@ -2,7 +2,8 @@
 ---
 
 A minimax implementation of tic tac toe. See Russell and Norvig as a reference for the minimax algorithm and related concepts.
-
+Since tic tac toe is a 'non-reversible' game: that is, it's not possible to revisit the same game state twice in a given game, 
+it's not necessary to actually build up the game play tree structure for minimax. Rather, it's sufficient to simply compute the (unique) score for each game state, recursively, by visiting all next game states according to the rules of the game. In this way the entire game tree is visited, even though it's not created nor is its structure known in advance. 
 
 ### Run
 
