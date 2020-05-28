@@ -7,6 +7,8 @@ it's not necessary to actually build up the game play tree structure for minimax
 
 A reference minimax implementation explicitly calculating on the game tree is given [here](https://gist.github.com/4d55397500/673542473187e56e3763ad65e5b5b370).
 
+A reference python implementation is [here](https://gist.github.com/4d55397500/1d7b0980d5dd5ded1a59ae633c5cbc20).
+
 ### Run
 
 Run the main program. The output should look something like below. With player 'x' playing minimax and player 'o' playing randomly, player 'x' always wins. However (you can try by uncommenting a line in the code) if both players play the minimax strategy from the same tree, the result is always a stalemate, as expected for both players playing an ideal strategy in tic tac toe.
