@@ -1,7 +1,7 @@
 # tictactoe-c
 ---
 
-A minimax implementation of tic tac toe.
+A minimax implementation of tic tac toe. See Russell and Norvig as a reference for the minimax algorithm and related concepts.
 
 
 ### Run
