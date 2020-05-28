@@ -6,7 +6,7 @@ A minimax implementation of tic tac toe. See Russell and Norvig as a reference f
 
 ### Run
 
-Run the main program. The output should look something like this:
+Run the main program. The output should look something like below. With player 'x' playing minimax and player 'o' playing randomly, player 'x' always wins. However (you can try by uncommenting a line in the code) if both players play the minimax strategy from the same tree, the result is always a stalemate, as expected for both players playing an ideal strategy in tic tac toe.
 
 ```
 
