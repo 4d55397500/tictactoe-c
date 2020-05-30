@@ -1,9 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "constants.h"
+#include "player.h"
+#include "nextstates.h"
+#include "state.h"
+#include "scores.h"
+#include "minimax.h"
 
 
 
-struct state* randomnext(struct state *s, Player player) {
+struct state* randomnext(struct state *s, enum Player player) {
     struct nextstates *ns = allnext(s, player);
     return &ns->states[rand() % ns->n];
 }
@@ -12,7 +19,7 @@ struct state* randomnext(struct state *s, Player player) {
 void playgame() {
     srand(time(0));
     printf("training minimax ...\n");
-    Player player = Player1;
+    enum Player player = Player1;
     int best = minimax(statealloc(), player);
     printf("best: %d\n", best);
     //printscores(calcscores);

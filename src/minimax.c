@@ -1,11 +1,12 @@
+#include <stddef.h>
 #include "minimax.h"
 #include "player.h"
 #include "state.h"
 #include "scores.h"
-
+#include "nextstates.h"
 
 int minimax(struct state *s, enum Player player) {
-    if (calcscores == nullptr) {
+    if (calcscores == NULL) {
         calcscores = scoresalloc();
         calcscores->n = 0;
     }
@@ -30,7 +31,7 @@ int minimax(struct state *s, enum Player player) {
 }
 
 // learned state transition
-struct state *transition(struct state *s, enum Player player) {
+struct state* transition(struct state *s, enum Player player) {
     struct nextstates *ns = allnext(s, player);
     int nextscore = (player == Player1) ? -BIGNUM: BIGNUM;
     int candidatescore;

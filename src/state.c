@@ -1,9 +1,11 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "state.h"
+#include "player.h"
 
 
 
-struct state* nextalloc(struct state *s, Player player, int i, int j) {
+struct state* nextalloc(struct state *s, enum Player player, int i, int j) {
     struct state *next = statealloc();
     for (int q = 0; q < SIZE; q++) {
         for (int v = 0; v < SIZE; v++) {
@@ -24,38 +26,38 @@ struct state* statealloc() {
     return s;
 }
 
-bool stalemate(struct state *s) {
+int stalemate(struct state *s) {
     return !iswin(s, Player1) && !iswin(s, Player2) && allfilled(s);
 }
 
 
-bool allfilled(struct state *s) {
+int allfilled(struct state *s) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             if (s->arr[i][j] == EMPTY) {
-                return false;
+                return 0;
             }
         }
     }
-    return true;
+    return 1;
 }
 
 
-bool iswin(struct state *s, Player player) {
-    bool row1 = s->arr[0][0] == player && s->arr[0][1] == player && s->arr[0][2] == player;
-    bool row2 = s->arr[1][0] == player && s->arr[1][1] == player && s->arr[1][2] == player;
-    bool row3 = s->arr[2][0] == player && s->arr[2][1] == player && s->arr[2][2] == player;
-    bool col1 = s->arr[0][0] == player && s->arr[1][0] == player && s->arr[2][0] == player;
-    bool col2 = s->arr[0][1] == player && s->arr[1][1] == player && s->arr[2][1] == player;
-    bool col3 = s->arr[0][2] == player && s->arr[1][2] == player && s->arr[2][2] == player;
-    bool diag1 = s->arr[0][0] == player && s->arr[1][1] == player && s->arr[2][2] == player;
-    bool diag2 = s->arr[0][2] == player && s->arr[1][1] == player && s->arr[2][0] == player;
+int iswin(struct state *s, enum Player player) {
+    int row1 = s->arr[0][0] == player && s->arr[0][1] == player && s->arr[0][2] == player;
+    int row2 = s->arr[1][0] == player && s->arr[1][1] == player && s->arr[1][2] == player;
+    int row3 = s->arr[2][0] == player && s->arr[2][1] == player && s->arr[2][2] == player;
+    int col1 = s->arr[0][0] == player && s->arr[1][0] == player && s->arr[2][0] == player;
+    int col2 = s->arr[0][1] == player && s->arr[1][1] == player && s->arr[2][1] == player;
+    int col3 = s->arr[0][2] == player && s->arr[1][2] == player && s->arr[2][2] == player;
+    int diag1 = s->arr[0][0] == player && s->arr[1][1] == player && s->arr[2][2] == player;
+    int diag2 = s->arr[0][2] == player && s->arr[1][1] == player && s->arr[2][0] == player;
     return row1 || row2 || row3 || col1 || col2 || col3 ||diag1 || diag2;
 }
 
 
 
-bool gameover(struct state *s) {
+int gameover(struct state *s) {
     return iswin(s, Player1) || iswin(s, Player2) || allfilled(s);
 }
 

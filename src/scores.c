@@ -1,5 +1,10 @@
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "constants.h"
 #include "state.h"
+#include "scores.h"
+
 
 
 // tbd

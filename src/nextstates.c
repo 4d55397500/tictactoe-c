@@ -1,12 +1,14 @@
 
+#include <stdlib.h>
 #include "nextstates.h"
+#include "player.h"
 
 
 struct nextstates* nextstatesalloc() {
-    return (struct nextstates *) malloc(sizeof(nextstates));
+    return (struct nextstates *) malloc(sizeof(struct nextstates));
 }
 
-struct nextstates* allnext(struct state *s, Player player) {
+struct nextstates* allnext(struct state *s, enum Player player) {
     struct nextstates* ns = nextstatesalloc();
     ns->n = 0;
     for (int i = 0; i < SIZE; i++) {
