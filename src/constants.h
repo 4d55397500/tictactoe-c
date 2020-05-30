@@ -1,0 +1,10 @@
+#ifndef TICTACTOE_CONSTANTS_H
+#define TICTACTOE_CONSTANTS_H
+
+#define SIZE 3
+#define EMPTY 'e'
+#define BIGNUM 100
+#define MAXNUMSTATES 10000
+
+
+#endif //TICTACTOE_CONSTANTS_H
